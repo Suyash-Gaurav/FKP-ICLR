@@ -244,7 +244,6 @@ See the [intern onboarding guide](docs/intern_onboarding.md) for the phased impl
 @inproceedings{gaurav2027fkp,
   title     = {Feature Knowledge Projection: Label-Free, Certifiable Edge Deployment of Frozen Foundation Models},
   author    = {Gaurav, Suyash},
-  booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2027},
   note      = {Preprint}
 }
