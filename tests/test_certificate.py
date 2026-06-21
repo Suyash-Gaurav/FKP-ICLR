@@ -10,6 +10,7 @@ Verifies that:
     5. Stability bound scales correctly with m and alpha.
 """
 
+
 import math
 
 import pytest
