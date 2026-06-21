@@ -1,0 +1,20 @@
+# configs/experiments/quick_cifar10.yaml
+experiment_name: "debug_cifar10_resnet18"
+
+# 1. Data & Teacher
+dataset: "cifar10"           # Torchvision will auto-download this
+teacher_model: "resnet18"    # Use ResNet-18 instead of 50/ViT for a FAST smoke test
+num_classes: 10
+
+# 2. FKP Hyperparameters (Keep small for quick math)
+calibration_samples: 200     # m=200 is enough to test ZCA and Ridge stability
+val_split: 0.2               # 160 train / 40 val for PCLS
+ridge_alpha: 1.0
+confidence_delta: 0.05
+
+# 3. Compression
+projection_rank: 16          # p=16. Very small, forces SVD truncation to work hard
+tail_threshold: 0.10         # Allow 10% tail energy loss for the quick test
+
+# 4. Outputs
+output_dir: "./outputs/quick_cifar10"
