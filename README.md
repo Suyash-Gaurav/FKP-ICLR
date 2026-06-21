@@ -3,9 +3,9 @@
 > **Label-Free, Certifiable Edge Deployment of Frozen Foundation Models**
 > 
 > Suyash Gaurav — Tokyo International University
-> Preprint submitted to ICLR 2027
+> Preprint 
 
-[![CI](https://github.com/suyashgaurav/FKP-ICLR2027/actions/workflows/ci.yml/badge.svg)](https://github.com/suyashgaurav/FKP-ICLR2027/actions)
+
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -244,7 +244,6 @@ See the [intern onboarding guide](docs/intern_onboarding.md) for the phased impl
 @inproceedings{gaurav2027fkp,
   title     = {Feature Knowledge Projection: Label-Free, Certifiable Edge Deployment of Frozen Foundation Models},
   author    = {Gaurav, Suyash},
-  booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2027},
   note      = {Preprint}
 }
