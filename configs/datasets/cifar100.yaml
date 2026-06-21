@@ -1,0 +1,16 @@
+name: cifar100
+description: "CIFAR-100: 60,000 32x32 images, 100 fine-grained classes."
+n_classes: 100
+image_size: 32
+mean: [0.5071, 0.4867, 0.4408]
+std: [0.2675, 0.2565, 0.2761]
+
+# torchvision.datasets.CIFAR100 auto-download
+local_root: "data/cifar100"
+
+split:
+  train: "train"
+  test: "test"
+
+calib_size: 500
+calib_split: "train"

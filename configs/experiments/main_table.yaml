@@ -1,0 +1,23 @@
+# Main results table experiment configuration (Table 1 in FKP paper)
+experiment: main_table
+
+teachers:
+  - resnet50
+  - vit_b16
+  - clip_vit_b32
+  - dinov2_small
+  - mobilenetv3_large_100
+
+datasets:
+  - plantvillage
+  - cifar100
+  - domainnet
+
+# Shared FKP hyperparameters
+alpha: 1.0
+delta: 0.01
+eta_tail: 0.05
+calib_size: 500
+train_ratio: 0.8
+lambda_zca: 1.0e-4
+seed: 42

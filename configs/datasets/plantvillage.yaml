@@ -1,0 +1,19 @@
+name: plantvillage
+description: "PlantVillage: 54,306 images of healthy/diseased plant leaves, 38 classes, 14 crop species."
+n_classes: 38
+image_size: 224
+mean: [0.485, 0.456, 0.406]  # ImageNet stats
+std: [0.229, 0.224, 0.225]
+
+# HuggingFace datasets identifier
+hf_dataset_id: "jkang37/plant-village"
+# Torchvision fallback: download manually and set this path
+local_root: "data/plantvillage"
+
+split:
+  train: "train"
+  test: "test"
+
+# FKP-specific settings
+calib_size: 500        # unlabelled calibration samples (m)
+calib_split: "train"   # which split to sample calibration data from

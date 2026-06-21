@@ -1,0 +1,38 @@
+# Ablation study configuration (Table 2 in FKP paper)
+# Tests: Full FKP vs no ZCA vs single-layer vs no SVD vs PCA projection
+experiment: ablation_zca
+
+teacher: resnet50
+dataset: cifar100
+calib_size: 500
+rank_p: 64
+alpha: 1.0
+delta: 0.01
+seed: 42
+
+ablation_variants:
+  - name: "Full FKP (ZCA + multi-layer + spectral)"
+    use_zca: true
+    multi_layer: true
+    use_svd: true
+
+  - name: "Without ZCA whitening"
+    use_zca: false
+    multi_layer: true
+    use_svd: true
+
+  - name: "Single-layer features (last only)"
+    use_zca: true
+    multi_layer: false
+    use_svd: true
+
+  - name: "Without spectral compression (p=D)"
+    use_zca: true
+    multi_layer: true
+    use_svd: false
+
+  - name: "PCA projection (instead of SVD)"
+    use_zca: true
+    multi_layer: true
+    use_svd: false
+    use_pca_proj: true

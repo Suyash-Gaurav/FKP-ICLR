@@ -1,0 +1,156 @@
+name: FKP CI — Math Tests & Code Quality
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Job 1: Critical Math Unit Tests ────────────────────────────────────────
+  math-tests:
+    name: Math Unit Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install core dependencies (CPU only for CI)
+        run: |
+          pip install --upgrade pip
+          pip install torch==2.2.2 --index-url https://download.pytorch.org/whl/cpu
+          pip install numpy pyyaml pytest pytest-cov
+
+      - name: Install FKP package
+        run: pip install -e . --no-deps
+
+      - name: Run critical math unit tests
+        run: |
+          pytest tests/test_ridge_dual.py tests/test_zca.py tests/test_certificate.py \
+            -v --tb=short --cov=fkp --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: math-tests
+          fail_ci_if_error: false
+        continue-on-error: true
+
+  # ── Job 2: Code Quality ─────────────────────────────────────────────────────
+  code-quality:
+    name: Code Quality (ruff + mypy)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install quality tools
+        run: pip install ruff black mypy
+
+      - name: Ruff lint
+        run: ruff check src/ tests/ scripts/
+
+      - name: Black format check
+        run: black --check src/ tests/ scripts/
+
+  # ── Job 3: Mathematical Property Verification ───────────────────────────────
+  math-verification:
+    name: Mathematical Property Verification
+    runs-on: ubuntu-latest
+    needs: math-tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install torch==2.2.2 --index-url https://download.pytorch.org/whl/cpu
+          pip install numpy pytest
+          pip install -e . --no-deps
+
+      - name: Verify primal-dual ridge equivalence (D=2000, m=500)
+        run: |
+          python -c "
+          import torch
+          from fkp.compression.ridge import ridge_primal, ridge_dual
+          torch.manual_seed(0)
+          m, D, c = 500, 2000, 10
+          E = torch.randn(m, D)
+          H = torch.randn(m, c)
+          W_p = ridge_primal(E, H, alpha=1.0)
+          W_d = ridge_dual(E, H, alpha=1.0)
+          diff = (W_p - W_d).abs().max().item()
+          assert diff < 1e-5, f'Equivalence FAILED: max diff = {diff:.2e}'
+          print(f'Primal-dual equivalence VERIFIED: max diff = {diff:.2e} < 1e-5')
+          "
+
+      - name: Verify ZCA identity covariance
+        run: |
+          python -c "
+          import torch
+          from fkp.conditioning.zca import ZCAWhitener
+          torch.manual_seed(1)
+          m, d = 300, 50
+          A = torch.randn(d, d)
+          cov = A.T @ A / d + 0.1 * torch.eye(d)
+          L = torch.linalg.cholesky(cov)
+          phi = torch.randn(m, d) @ L.T
+          whitener = ZCAWhitener(lambda_zca=1e-4)
+          E = whitener.fit_transform([phi], calibration_size=m)
+          E_c = E - E.mean(0)
+          C = (E_c.T @ E_c) / m
+          err = (C - torch.eye(d)).abs().max().item()
+          assert err < 1e-4, f'ZCA identity covariance FAILED: max err = {err:.2e}'
+          print(f'ZCA identity covariance VERIFIED: max err = {err:.2e} < 1e-4')
+          "
+
+      - name: Verify certificate non-negativity
+        run: |
+          python -c "
+          import torch
+          from fkp.conditioning.zca import ZCAWhitener
+          from fkp.conditioning.centering import center_logits
+          from fkp.compression.ridge import ridge_auto
+          from fkp.compression.svd import spectral_compress
+          from fkp.theory.certificate import FKPCertificate
+          torch.manual_seed(42)
+          m, D, c = 200, 50, 10
+          W_true = torch.randn(D, c)
+          E_raw = torch.randn(m, D)
+          H_raw = E_raw @ W_true + 0.01 * torch.randn(m, c)
+          whitener = ZCAWhitener(lambda_zca=1e-4)
+          E = whitener.fit_transform([E_raw], calibration_size=m)
+          H_c, _ = center_logits(H_raw)
+          W = ridge_auto(E, H_c, alpha=1.0)
+          decomp = spectral_compress(W, eta_tail=0.05)
+          cert = FKPCertificate(alpha=1.0, delta=0.01)
+          res = cert.compute(E, H_c, H_raw, W, decomp.singular_values, decomp.rank_p)
+          assert res.eps_delta >= 0, f'eps_delta is negative: {res.eps_delta}'
+          print(f'Certificate VERIFIED: eps_delta={res.eps_delta:.6f} >= 0')
+          "

@@ -1,0 +1,16 @@
+name: clip_vit_b32
+backend: transformers
+model_id: "openai/clip-vit-base-patch32"
+n_params: 151_277_313  # vision encoder only
+input_size: [3, 224, 224]
+
+hook_layers:
+  - encoder.layers.2
+  - encoder.layers.5
+  - encoder.layers.8
+  - encoder.layers.11
+
+total_feature_dim: 2048  # 4 x 512
+
+default_alpha: 1.0
+default_rank_p: 64

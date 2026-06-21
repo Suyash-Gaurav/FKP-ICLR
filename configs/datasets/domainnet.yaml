@@ -1,0 +1,13 @@
+name: domainnet
+description: "DomainNet: 345 classes across 6 visual domains. Use 'real' and 'sketch' splits."
+n_classes: 345
+image_size: 224
+mean: [0.485, 0.456, 0.406]
+std: [0.229, 0.224, 0.225]
+
+domains: ["real", "sketch"]
+local_root: "data/domainnet"
+download_url: "http://ai.bu.edu/M3SDA/"
+
+calib_size: 500
+calib_split: "train"

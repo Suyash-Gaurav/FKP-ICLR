@@ -1,0 +1,20 @@
+name: vit_b16
+backend: timm
+model_id: "vit_base_patch16_224"
+pretrained: true
+n_params: 86_567_656   # 86.6M parameters
+input_size: [3, 224, 224]
+
+# ViT-B/16 has 12 transformer blocks (index 0-11)
+# Extract from blocks 2, 5, 8, 11 (early, mid-low, mid-high, final)
+hook_layers:
+  - blocks.2     # 768-dim
+  - blocks.5     # 768-dim
+  - blocks.8     # 768-dim
+  - blocks.11    # 768-dim
+
+total_feature_dim: 3072   # 4 x 768
+
+# NOTE: For D=3072 and m=500, D > m => PCA-ZCA hybrid will be triggered.
+default_alpha: 1.0
+default_rank_p: 64

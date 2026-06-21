@@ -1,0 +1,20 @@
+name: resnet50
+backend: timm
+model_id: "resnet50"
+pretrained: true
+n_params: 25_557_032   # 25.6M parameters
+input_size: [3, 224, 224]
+
+# Layers for multi-layer feature extraction
+# ResNet-50 has 4 residual stages: layer1-4
+hook_layers:
+  - layer1    # 256-dim features, stride 4
+  - layer2    # 512-dim features, stride 8
+  - layer3    # 1024-dim features, stride 16
+  - layer4    # 2048-dim features, stride 32
+
+total_feature_dim: 3840   # sum: 256+512+1024+2048
+
+# FKP calibration defaults (from Table 1 in paper)
+default_alpha: 1.0
+default_rank_p: 64
