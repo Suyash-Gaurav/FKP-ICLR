@@ -9,13 +9,14 @@ Reference:
     Edge Deployment of Frozen Foundation Models. ICLR 2027.
 """
 
-from fkp.compression.ridge import ridge_primal, ridge_dual, ridge_auto
-from fkp.compression.svd import spectral_compress, select_rank
-from fkp.compression.pcls import compute_pcls
-from fkp.conditioning.zca import ZCAWhitener
-from fkp.conditioning.centering import center_logits
-from fkp.theory.bounds import stability_bound, feature_norm_bound, projection_loss_bound
-from fkp.theory.certificate import FKPCertificate
+from .compression.ridge import ridge_primal, ridge_dual, ridge_auto
+from .compression.svd import spectral_compress, select_rank
+from .compression.pcls import compute_pcls
+from .conditioning.zca import ZCAWhitener
+from .conditioning.centering import center_logits
+from .theory.bounds import stability_bound, feature_norm_bound, projection_loss_bound
+from .theory.certificate import FKPCertificate
+
 
 __version__ = "0.1.0"
 __all__ = [

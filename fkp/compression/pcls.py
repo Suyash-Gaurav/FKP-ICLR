@@ -23,8 +23,8 @@ from dataclasses import dataclass
 
 import torch
 
-from fkp.compression.ridge import ridge_auto
-from fkp.conditioning.centering import center_logits
+from compression.ridge import ridge_auto
+from conditioning.centering import center_logits
 
 
 PCLS_HIGH_THRESHOLD = 0.8

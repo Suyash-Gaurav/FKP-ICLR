@@ -14,6 +14,10 @@ import os
 import random
 
 import torch
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 
 def seed_everything(seed: int = 42) -> None:

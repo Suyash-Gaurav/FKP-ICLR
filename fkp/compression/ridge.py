@@ -22,6 +22,9 @@ from __future__ import annotations
 import torch
 import torch.linalg as LA
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def ridge_primal(
     E: torch.Tensor,
