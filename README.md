@@ -2,9 +2,7 @@
 
 > **Label-Free, Certifiable Edge Deployment of Frozen Foundation Models**
 > 
-> Suyash Gaurav — Tokyo International University
-> Preprint 
-
+> Suyash Gaurav — 
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)

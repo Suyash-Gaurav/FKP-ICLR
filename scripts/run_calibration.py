@@ -68,7 +68,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--teacher", type=str, default="resnet50",
                         help="Teacher model name (timm or 'clip', 'dinov2_small')")
-    parser.add_argument("--dataset", type=str, default="plantvillage",
+    parser.add_argument("--dataset", type=str, default="cifar100",
                         help="Dataset name (plantvillage, cifar100, domainnet)")
     parser.add_argument("--config", type=str, default=None,
                         help="Path to YAML experiment config (overrides CLI args)")
